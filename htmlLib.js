@@ -1,6 +1,6 @@
 const DEFAULT_MAX = 500;
 const DEFAULT_MIN = 150;
-let test = 0;
+
 class Element {
     constructor(type) {
         this.element = document.createElement(type);
