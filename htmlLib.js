@@ -132,8 +132,8 @@ class Element {
     slideToEdge(points, speed, data) {
 
         const theta = TR.getAdjustedTheta(data.theta, data.quadrant)
-        let x_step = TR.getAdjacentWithThetaAndHypotenuse(speed, theta);
-        let y_step = TR.getOppositeWithThetaAndHypotenuse(speed, theta);
+        let x_step = TR.getAdjacentWithThetaAndHypotenuse(speed * 4, theta);
+        let y_step = TR.getOppositeWithThetaAndHypotenuse(speed * 4, theta);
 
         if (data.quadrant === 2 || data.quadrant === 3) {
             x_step *= -1;

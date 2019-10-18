@@ -71,7 +71,7 @@ class PointDetector {
             const p = this.data.touchList[id];
             this.removeMemberClusters(this.data.touchList[point.identifier].membership);
             if (this.wasAClick(p)) {
-                this.data.clicks.push(p);
+                this.data.clicks.push(point);
             } else if (p.dragging && p.wasThrown()) {
                 p.interactionElement.throw(p.throwData);
             }
