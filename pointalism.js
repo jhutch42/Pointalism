@@ -169,7 +169,6 @@ class PointDetector {
         this.data.clicks.forEach(click => {
             elements.forEach(e => {
                 if (e.isInside(click.screenX, click.screenY)) {
-                    console.log(e.element.animations.rotation)
                     if (e.element.animations.rotation.interval > 0) {
                         clearInterval(e.element.animations.rotation.interval);
                         e.element.animations.rotation = {};
@@ -279,6 +278,7 @@ class Cluster {
 
     /* When Touchpoints are moved, cluster data is updated */
     updateData() {
+        console.log(this.rotating);
         this.edgeValues = this.getEdgeValues(); // Minima and maxima
         this.widthHistory.unshift(this.getWidth()); // Stores Historical width data
         this.heightHistory.unshift(this.getHeight()); // Stores Historical Height data
@@ -647,7 +647,8 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
     function evaluatePointsForRotation(results, elements) {
         Object.values(results.clusters['2']).forEach(cluster => {
             if (!cluster.zooming) {
-                if (cluster.rotating) {
+                if (cluster.points[0].rotating) {
+                    cluster.interactionElement = cluster.points[0].interactionElement;
                     cluster.twoFingerRotate();
                 } else {
                     if (elements.length > 0) {
@@ -666,7 +667,9 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
     function evaluatePointsForZoom(results, elements) {
         Object.values(results.clusters['2']).forEach(cluster => {
             if (!cluster.rotating) {
-                if (cluster.zooming) {
+                if (cluster.points[0].zooming) {
+                    cluster.interactionElement = cluster.points[0].interactionElement;
+                    cluster.twoFingerRotate();
                     cluster.pinchZoom();
                 } else {
                     if (elements.length > 0) {
@@ -686,7 +689,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
     function evaluatePointsForDrag(results, elements) {
         Object.values(results.touchList).forEach(point => {
             if (point.wasMoved()) {
-                if (!point.zooming) {
+                if (!point.zooming && !point.rotating) {
                     if (point.dragging) {
                         point.dragElement();
                     } else {
