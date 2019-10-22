@@ -45,3 +45,7 @@ function createImage() {
     elements.push(new ImageElement(DEFAULT_MIN, DEFAULT_MIN, 'absolute', 'https://image.shutterstock.com/image-vector/cute-frog-cartoon-isolated-on-600w-747974962.jpg'));
 }
 
+function createMenu() {
+    elements.push(new TouchMenu(100, 100, 'absolute', 100, 1000));
+}
+

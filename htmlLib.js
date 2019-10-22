@@ -25,13 +25,42 @@ class Element {
         return this;
     }
 
+    setWidthInherit() {
+        this.element.style.width = 'inherit';
+        return this;
+    }
+
+    setHeightInherit() {
+        this.element.style.height = 'inherit';
+        return this;
+    }
+
+    setLeftAuto() {
+        this.element.style.left = 'auto';
+        return this;
+    }
+
+    setTopAuto() {
+        this.element.style.top = 'auto';
+        return this;
+    }
+    
     setWidthPx(width) {
         this.element.style.width = `${width}px`;
         return this;
     }
 
+    setWidthPercentage(width) {
+        this.element.style.width = `${width}%`;
+        return this;
+    }
+
     setHeightPx(height) {
         this.element.style.height = `${height}px`;
+        return this;
+    }
+    setHeightPercentage(height) {
+        this.element.style.height = `${height}%`;
         return this;
     }
 
@@ -160,6 +189,22 @@ class Element {
         
     }
 
+    grow(max_x, max_y, grow_pixel_speed) {
+
+        const interval = setInterval(() => {
+
+            if (this.getWidth() >= max_x || this.getHeight() >= max_y) {
+                clearInterval(interval);
+            }
+
+            this.setWidthPx(this.getWidth() + grow_pixel_speed);
+            this.setHeightPx(this.getHeight() + grow_pixel_speed);
+            this.setLeft(this.getX() - grow_pixel_speed / 2);
+            this.setTop(this.getY() - grow_pixel_speed / 2);
+        }, 1);
+        return this;
+    }
+
     slideToPoint(x, y, time) {
         const current_x = this.getX();
         const current_y = this.getY();
@@ -177,6 +222,8 @@ class Element {
         setTimeout(() => {
             clearInterval(interval);
         }, time);
+
+        return this;
     }
 
     rotationAnimation(speed, duration, reverse) {
@@ -217,8 +264,6 @@ class Element {
             }, delay),
             duration: duration
         }
-
-
 
         return this;
     }
@@ -387,7 +432,10 @@ class HTMLElement {
 class TouchMenu extends HTMLElement {
     constructor(width, height, position, min, max) {
         super('div', min, max);
-        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position);
+        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position).setPosition({ x: 500, y: 500 });
+        this.innerElement = new Circle(0, 'red', 'relative', 100, 1000);
+        this.innerElement.element.appendToParentElement(this.element.element).setWidthInherit().setHeightInherit().setLeftAuto().setTopAuto();
+        this.element.grow(600, 600, 1);        
         return this;
     }
 }
@@ -419,7 +467,7 @@ class Rectangle extends Shape {
 class Circle extends Shape {
     constructor(radius, color, position, min, max) {
         super(radius, radius, color, position, min, max)
-        this.element.setBorderRadius('50%').slideToPoint(500, 1000, 500);
+        this.element.setBorderRadius('50%').slideToPoint(500, 1000, 500).grow(400, 400, 2);
         return this;
     }
 }

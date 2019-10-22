@@ -9,6 +9,8 @@ const ROTATION_THRESHOLD = 150;
 const ROTATION_SEPARATION_MAX = 300;
 const CLICK_MAX = 200;
 
+let create = false;
+
 let clusterKey = 0;
 /** PointDetector finds and stores all touchpoint and cluster data.
  */
@@ -636,7 +638,10 @@ class Trig {
 PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     if (thereAreClustersOfThree()) {
-        
+        if (!create) {
+            create = true;
+            createMenu();
+        }
     }
 
     if (elements.length > 0) {
@@ -713,7 +718,6 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
     }
 
     function thereAreClustersOfThree() {
-        console.log(results.clusters['3']);
         return (results.clusters['3'] !== undefined && Object.values(results.clusters['3']).length > 0);
     }
 }
