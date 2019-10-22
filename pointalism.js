@@ -278,7 +278,6 @@ class Cluster {
 
     /* When Touchpoints are moved, cluster data is updated */
     updateData() {
-        console.log(this.rotating);
         this.edgeValues = this.getEdgeValues(); // Minima and maxima
         this.widthHistory.unshift(this.getWidth()); // Stores Historical width data
         this.heightHistory.unshift(this.getHeight()); // Stores Historical Height data
@@ -636,6 +635,10 @@ class Trig {
 
 PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
+    if (thereAreClustersOfThree()) {
+        console.log('three');
+    }
+
     if (elements.length > 0) {
         if (thereAreClustersOfTwo()) {
             evaluatePointsForRotation(results, elements);
@@ -646,7 +649,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     function evaluatePointsForRotation(results, elements) {
         Object.values(results.clusters['2']).forEach(cluster => {
-            if (!cluster.zooming) {
+            if (!cluster.points[0].zooming) {
                 if (cluster.points[0].rotating) {
                     cluster.interactionElement = cluster.points[0].interactionElement;
                     cluster.twoFingerRotate();
@@ -666,10 +669,9 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     function evaluatePointsForZoom(results, elements) {
         Object.values(results.clusters['2']).forEach(cluster => {
-            if (!cluster.rotating) {
+            if (!cluster.points[0].rotating) {
                 if (cluster.points[0].zooming) {
                     cluster.interactionElement = cluster.points[0].interactionElement;
-                    cluster.twoFingerRotate();
                     cluster.pinchZoom();
                 } else {
                     if (elements.length > 0) {
@@ -708,6 +710,11 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     function thereAreClustersOfTwo() {
         return (results.clusters['2'] !== undefined && Object.values(results.clusters['2']).length > 0);
+    }
+
+    function thereAreClustersOfThree() {
+        console.log(results.clusters['3']);
+        return (results.clusters['3'] !== undefined && Object.values(results.clusters['3']).length > 0);
     }
 }
 

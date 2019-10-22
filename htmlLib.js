@@ -384,6 +384,14 @@ class HTMLElement {
 
 }
 
+class TouchMenu extends HTMLElement {
+    constructor(width, height, position, min, max) {
+        super('div', min, max);
+        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position);
+        return this;
+    }
+}
+
 class ImageElement extends HTMLElement {
     constructor(width, height, position, src, min, max) {
         super('img', min, max);
@@ -430,4 +438,8 @@ class Line extends Shape {
         this.element.setBorderBottom(height, color);
         return this;
     }
+}
+
+function getById(id) {
+    return document.getElementById(id);
 }
