@@ -432,9 +432,8 @@ class HTMLElement {
 class TouchMenu extends HTMLElement {
     constructor(width, height, position, min, max) {
         super('div', min, max);
-        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position).setPosition({ x: 500, y: 500 });
-        this.innerElement = new Circle(0, 'red', 'relative', 0, 0);
-        this.innerElement.element.appendToParentElement(this.element.element).setWidthInherit().setHeightInherit().setLeftAuto().setTopAuto();
+        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position).setPosition({ x: 500, y: 500 }).setBackgroundColor('yellow');
+        this.element.element.style.borderRadius = '50%';
         this.element.grow(600, 600, 1);        
         return this;
     }
