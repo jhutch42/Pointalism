@@ -636,7 +636,7 @@ class Trig {
 PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     if (thereAreClustersOfThree()) {
-        console.log('three');
+        
     }
 
     if (elements.length > 0) {
