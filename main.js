@@ -2,19 +2,22 @@ const detector = new PointDetector();
 const elements = [];
 
 document.addEventListener('touchstart', (event) => {
-    detector.update(event);
+    results = detector.update(event);
+    detector.checkFocus(results, elements);
     event.preventDefault();
 }, { passive: false });
 
 document.addEventListener('touchmove', (event) => {
     results = detector.update(event);
     detector.evaluateTouchData(results, elements);
+    detector.checkFocus(results, elements);
     event.preventDefault();
 }, { passive: false });
 
 document.addEventListener('touchend', (event) => {
-    detector.update(event);
+    results = detector.update(event);
     detector.evaluateClickData(elements);
+    detector.checkFocus(results, elements);
     event.preventDefault();
 }, { passive: false });
 
@@ -26,26 +29,43 @@ document.getElementById('line').addEventListener('touchstart', createLine);
 document.getElementById('img').addEventListener('touchstart', createImage);
 
 function createTriangle() {
-    elements.push(new Triangle(DEFAULT_MIN, 20, 'green', 'absolute'));
+    const e = new Triangle(DEFAULT_MIN, 20, 'green', 'absolute');
+    e.allowDrag().allowThrow().allowRotate().allowZoom();
+    elements.push(e);
 }
 
 function createRectangle() {
-    elements.push(new Rectangle(DEFAULT_MIN, DEFAULT_MIN, 'red', 'absolute'));
+    const e = new Rectangle(DEFAULT_MIN, DEFAULT_MIN, 'red', 'absolute');
+    e.allowDrag().allowThrow().allowRotate().allowZoom();
+    elements.push(e);
 }
 
 function createCircle() {
-    elements.push(new Circle(DEFAULT_MIN, 'blue', 'absolute'));
+    const e = new Circle(DEFAULT_MIN, 'blue', 'absolute');
+    e.allowDrag().allowThrow().allowZoom();
+    elements.push(e);
 }
 
 function createLine() {
-    elements.push(new Line(DEFAULT_MIN, 4, 'orange', 'absolute'));
+    const e = new Line(DEFAULT_MIN, 4, 'orange', 'absolute');
+    e.allowDrag().allowRotate().allowZoom();
+    elements.push(e);
 
 }
 function createImage() {
-    elements.push(new ImageElement(DEFAULT_MIN, DEFAULT_MIN, 'absolute', 'https://image.shutterstock.com/image-vector/cute-frog-cartoon-isolated-on-600w-747974962.jpg'));
+    const e = new ImageElement(DEFAULT_MIN, DEFAULT_MIN, 'absolute', 'https://image.shutterstock.com/image-vector/cute-frog-cartoon-isolated-on-600w-747974962.jpg');
+    e.allowDrag().allowThrow().allowRotate().allowZoom();
+    elements.push(e);
 }
 
 function createMenu() {
-    elements.push(new TouchMenu(100, 100, 'absolute', 100, 1000));
+    const e = new SquareMenu(100, 100, 'absolute', 100, 1000);
+    e.allowDrag().allowThrow().allowRotate().allowZoom();
+    elements.push(e);
+    //e.element.setBorder(1, 'black');
+    e.addButton('Square');
+    e.addButton('Frog');
+    e.addButton('Circle');
+    
 }
 

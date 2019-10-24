@@ -9,7 +9,7 @@ const ROTATION_THRESHOLD = 150;
 const ROTATION_SEPARATION_MAX = 300;
 const CLICK_MAX = 200;
 
-let create = false;
+let create_3_touch = false;
 
 let clusterKey = 0;
 /** PointDetector finds and stores all touchpoint and cluster data.
@@ -77,6 +77,7 @@ class PointDetector {
             } else if (p.dragging && p.wasThrown()) {
                 p.interactionElement.throw(p.throwData);
             }
+
             delete this.data.touchList[id];
             return this;
         });
@@ -634,12 +635,25 @@ class Trig {
 
 }
 
+PointDetector.prototype.checkFocus = (results, elements) => {
+
+    elements.forEach(e => {
+        let found = false;
+        Object.values(results.touchList).forEach(point => {
+            if (e.isInside(point.x, point.y)) {
+                found = true;
+            }
+        });
+        e.toggleFocus(found);
+    });
+}
+
 
 PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     if (thereAreClustersOfThree()) {
-        if (!create) {
-            create = true;
+        if (!create_3_touch) {
+            create_3_touch = true;
             createMenu();
         }
     }
@@ -661,9 +675,11 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
                 } else {
                     if (elements.length > 0) {
                         elements.forEach(e => {
-                            cluster.rotating = e.checkRotation(cluster);
-                            if (cluster.rotating) {
-                                cluster.interactionElement = e;
+                            if (e.rotatable()){
+                                cluster.rotating = e.checkRotation(cluster);
+                                if (cluster.rotating) {
+                                    cluster.interactionElement = e;
+                                }
                             }
                         });
                     }
@@ -681,9 +697,11 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
                 } else {
                     if (elements.length > 0) {
                         elements.forEach(e => {
-                            cluster.zooming = e.checkZoom(cluster.points[0], cluster.points[1]);
-                            if (cluster.zooming) {
-                                cluster.interactionElement = e;
+                            if (e.zoomable()) {
+                                cluster.zooming = e.checkZoom(cluster.points[0], cluster.points[1]);
+                                if (cluster.zooming) {
+                                    cluster.interactionElement = e;
+                                }
                             }
                         });
                     }
@@ -702,10 +720,12 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
                     } else {
                         if (elements.length > 0) {
                             elements.forEach(e => {
-                                if (compareTime(point.createdAt, new Date().getTime(), MIN_DRAG_TIME)) {
-                                    e.checkDrag(point);
+                                if (e.draggable()) {
+                                    if (compareTime(point.createdAt, new Date().getTime(), MIN_DRAG_TIME)) {
+                                        e.checkDrag(point);
+                                    }
                                 }
-                            })
+                            });
                         }
                     }
                 }

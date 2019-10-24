@@ -95,22 +95,27 @@ class Element {
     }
 
     setBorderRadius(radius) {
-        this.element.style.borderRadius = radius;
+        if (radius) {
+            this.element.style.borderRadius = radius;
+        }
         return this;
     }
 
     setBorder(thickness, color) {
         this.element.style.border = `${thickness}px solid ${color}`;
+        this.border_width = thickness;
         return this;
     }
 
     setBorderLeft(thickness, color) {
         this.element.style.borderLeft = `${thickness}px solid ${color}`;
+        this.border_width = thickness;
         return this;
     }
 
     setBorderTop(thickness, color) {
         this.element.style.borderTop = `${thickness}px solid ${color}`;
+        this.border_width = thickness;
         return this;
     }
 
@@ -284,8 +289,69 @@ class HTMLElement {
         this.minSize = min;
         this.maxSize = max;
         this.rotation = 0;
+        this.border_width = 0;
+        this.infocus = false;
+
+        this.manipulations = {
+            drag: false,
+            zoom: false,
+            rotate: false,
+            throw: false
+        };
     }
 
+    toggleFocus(inFocus) {
+        this.infocus = inFocus;
+        this.highlight(inFocus);
+    }
+
+    highlight(focus) {
+        if (focus) {
+            this.element.setBorder(3, 'black');
+        } else {
+            this.element.setBorder(0, 'transparent');
+        }
+    }
+
+    zoomable() {
+        return this.manipulations.zoom;
+    }
+
+    draggable() {
+        return this.manipulations.drag;
+    }
+
+    throwable() {
+        return this.manipulations.throw;
+    }
+
+    rotatable() {
+        return this.manipulations.rotate;
+    }
+
+    allowDrag() {
+        this.manipulations.drag = true;
+        return this;
+    }
+
+    allowZoom() {
+        this.manipulations.zoom = true;
+        return this;
+    }
+
+    allowRotate() {
+        this.manipulations.rotate = true;
+        return this;
+    }
+
+    allowThrow() {
+        this.manipulations.throw = true;
+        return this;
+    }
+
+    getElement() {
+        return this.element.element;
+    }
 
     reposition(left, top) {
         this.element.setLeft(left).setTop(top);
@@ -293,8 +359,8 @@ class HTMLElement {
     }
 
     repositionCenter(left, top) {
-        const corners = this.element.element.getBoundingClientRect();
-        this.element.setLeft(left - corners.width / 2).setTop(top - corners.width / 2);
+        const corners = this.getElement().getBoundingClientRect();
+        this.element.setLeft(left - corners.width / 2 - this.border_width).setTop(top - corners.width / 2 - this.border_width);
         return this;
     }
 
@@ -317,12 +383,15 @@ class HTMLElement {
 
     zoom(zoomValue) {
 
-        const newWidth = this.getWidth() + zoomValue;
-        const newHeight = this.getHeight() + zoomValue;
+        const newWidth = this.getWidth() + zoomValue -  2 * this.getBorderWidth();
+        const newHeight = this.getHeight() + zoomValue - 2 * this.getBorderWidth();
+
+        
 
         if (newWidth > this.minSize && newWidth < this.maxSize && newHeight > this.minSize && newHeight < this.maxSize) {
             this.element.setWidthPx(newWidth).setHeightPx(newHeight);
             this.reposition(this.getX() - zoomValue / 2, this.getY() - zoomValue / 2);
+            
         }
         return this;
     }
@@ -371,7 +440,9 @@ class HTMLElement {
         if (this.isInside(point.x, point.y) && point.isUnoccupied()) {
             point.dragging = true;
             point.interactionElement = this;
+            return true;
         }
+        return false;
     }
 
     checkZoom(point1, point2) {
@@ -411,6 +482,11 @@ class HTMLElement {
         return this.element.element.offsetHeight;
     }
 
+    getBorderWidth() {
+        const w = this.element.element.style.borderWidth.split('p');
+        return w[0];
+    }
+
     getX() {
         return this.element.element.offsetLeft;
     }
@@ -430,13 +506,33 @@ class HTMLElement {
 }
 
 class TouchMenu extends HTMLElement {
-    constructor(width, height, position, min, max) {
+    constructor(width, height, position, min, max, borderRadius) {
         super('div', min, max);
-        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position).setPosition({ x: 500, y: 500 }).setBackgroundColor('yellow');
-        this.element.element.style.borderRadius = '50%';
-        this.element.grow(600, 600, 1);        
+        this.element.appendToBody().setWidthPx(width).setHeightPx(height).setPosition(position).setBackgroundColor('yellow').setBorderRadius(borderRadius);
         return this;
     }
+
+    addButton(text) {
+        
+    }
+}
+
+class Button extends HTMLElement {
+
+}
+
+class CircleMenu extends TouchMenu {
+    constructor(width, height, position, min, max) {
+        super(width, height, position, min, max, '50%');
+    }
+}
+
+class SquareMenu extends TouchMenu {
+    constructor(width, height, position, min, max) {
+        super(width, height, position, min, max, '0%');
+    }
+
+    
 }
 
 class ImageElement extends HTMLElement {
@@ -466,7 +562,7 @@ class Rectangle extends Shape {
 class Circle extends Shape {
     constructor(radius, color, position, min, max) {
         super(radius, radius, color, position, min, max)
-        this.element.setBorderRadius('50%').slideToPoint(500, 1000, 500).grow(400, 400, 2);
+        this.element.setBorderRadius('50%');
         return this;
     }
 }
@@ -490,3 +586,4 @@ class Line extends Shape {
 function getById(id) {
     return document.getElementById(id);
 }
+
