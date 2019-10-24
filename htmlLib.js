@@ -307,7 +307,7 @@ class HTMLElement {
 
     highlight(focus) {
         if (focus) {
-            this.element.setBorder(3, 'black');
+            this.element.setBorder(2, 'black');
         } else {
             this.element.setBorder(0, 'transparent');
         }
