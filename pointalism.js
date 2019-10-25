@@ -687,7 +687,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     function evaluatePointsForRotation(results, elements) {
         Object.values(results.clusters['2']).forEach(cluster => {
-            if (!cluster.points[0].zooming) {
+            if (!cluster.points[0].zooming && !cluster.points[0].occupied) {
                 if (cluster.points[0].rotating) {
                     cluster.interactionElement = cluster.points[0].interactionElement;
                     cluster.twoFingerRotate();
@@ -709,7 +709,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     function evaluatePointsForZoom(results, elements) {
         Object.values(results.clusters['2']).forEach(cluster => {
-            if (!cluster.points[0].rotating) {
+            if (!cluster.points[0].rotating && !cluster.points[0].occupied) {
                 if (cluster.points[0].zooming) {
                     cluster.interactionElement = cluster.points[0].interactionElement;
                     cluster.pinchZoom();
@@ -733,7 +733,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
     function evaluatePointsForDrag(results, elements) {
         Object.values(results.touchList).forEach(point => {
             if (point.wasMoved()) {
-                if (!point.zooming && !point.rotating) {
+                if (!point.zooming && !point.rotating && !cluster.points[0].occupied) {
                     if (point.dragging) {
                         point.dragElement();
                     } else {
