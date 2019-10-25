@@ -678,7 +678,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
                     });
                 });
                 if (create) {
-                    cluster.points[0].occupied = true;
+                    cluster.points.forEach(point => point.occupied = true);
                     createMenu(cluster.getCenter());
                 }
             }
@@ -733,7 +733,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
     function evaluatePointsForDrag(results, elements) {
         Object.values(results.touchList).forEach(point => {
             if (point.wasMoved()) {
-                if (!point.zooming && !point.rotating && !cluster.points[0].occupied) {
+                if (!point.zooming && !point.rotating) {
                     if (point.dragging) {
                         point.dragElement();
                     } else {
