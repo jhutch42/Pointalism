@@ -202,6 +202,7 @@ class Cluster {
         this.edges = this.getEdges(); // Creates the edges of the graph
         this.zooming = false;
         this.rotating = false;
+        this.occupied = false;
         this.interactionElement = null;
     }
 
@@ -400,6 +401,7 @@ class TouchPoint {
         this.dragging = false;
         this.zooming = false;
         this.rotating = false;
+        this.occupied = false;
 
         this.throwData = {distance: 0, time: 0, start: {x: 0, y: 0}, finish: {x: 0, y: 0}}; 
         
@@ -652,10 +654,7 @@ PointDetector.prototype.checkFocus = (results, elements) => {
 PointDetector.prototype.evaluateTouchData = (results, elements) => {
 
     if (thereAreClustersOfThree()) {
-        if (!create_3_touch) {
-            create_3_touch = true;
-            createMenu();
-        }
+        checkThreeFingerMenuTouch(results, elements);
     }
 
     if (elements.length > 0) {
@@ -664,6 +663,26 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
             evaluatePointsForZoom(results, elements);
         }
         evaluatePointsForDrag(results, elements);
+    }
+
+    function checkThreeFingerMenuTouch(results, elements) {
+
+        results.clusters['3'].forEach(cluster => {
+            if (!cluster.points[0].occupied) {
+                let create = true;
+                cluster.points.forEach(point => {
+                    elements.forEach(e => {
+                        if (e.isInside(point.x, point.y)) {
+                            create = false;
+                        }
+                    });
+                });
+                if (create) {
+                    cluster.points[0].occupied = true;
+                    createMenu();
+                }
+            }
+        });
     }
 
     function evaluatePointsForRotation(results, elements) {

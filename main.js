@@ -21,11 +21,8 @@ document.addEventListener('touchend', (event) => {
     event.preventDefault();
 }, { passive: false });
 
-
-document.getElementById('tri').addEventListener('touchstart', createTriangle);
 document.getElementById('rect').addEventListener('touchstart', createRectangle);
 document.getElementById('cir').addEventListener('touchstart', createCircle);
-document.getElementById('line').addEventListener('touchstart', createLine);
 document.getElementById('img').addEventListener('touchstart', createImage);
 
 function createTriangle() {
@@ -50,8 +47,8 @@ function createLine() {
     const e = new Line(DEFAULT_MIN, 4, 'orange', 'absolute');
     e.allowDrag().allowRotate().allowZoom();
     elements.push(e);
-
 }
+
 function createImage() {
     const e = new ImageElement(DEFAULT_MIN, DEFAULT_MIN, 'absolute', 'https://image.shutterstock.com/image-vector/cute-frog-cartoon-isolated-on-600w-747974962.jpg');
     e.allowDrag().allowThrow().allowRotate().allowZoom();
