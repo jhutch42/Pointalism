@@ -57,7 +57,7 @@ function createImage() {
 
 function createMenu(center) {
     const e = new SquareMenu(100, 100, 'absolute', 100, 1000);
-    e.allowDrag().allowThrow().allowRotate().allowZoom().reposition(center.x, center.y);
+    e.allowDrag().allowThrow().allowRotate().allowZoom().reposition((center.x - e.getWidth() / 2), center.y - e.getHeight() / 2);
     elements.push(e);
     //e.element.setBorder(1, 'black');
     e.addButton('Square');
