@@ -679,7 +679,7 @@ PointDetector.prototype.evaluateTouchData = (results, elements) => {
                 });
                 if (create) {
                     cluster.points[0].occupied = true;
-                    createMenu();
+                    createMenu(cluster.getCenter());
                 }
             }
         });
